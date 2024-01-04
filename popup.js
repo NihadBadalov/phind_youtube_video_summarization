@@ -147,10 +147,10 @@ function _no_captions(body) {
 }
 
 const WHITELISTED_URLS = [
-  'www.phind.com',
-  'phind.com',
-  // 'www.youtube.com',
-  // 'youtube.com',
+  // 'www.phind.com',
+  // 'phind.com',
+  'www.youtube.com',
+  'youtube.com',
 ];
 
 
