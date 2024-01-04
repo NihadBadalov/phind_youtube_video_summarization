@@ -147,10 +147,13 @@ function _no_captions(body) {
 }
 
 const WHITELISTED_URLS = [
-  // 'www.phind.com',
-  // 'phind.com',
   'www.youtube.com',
   'youtube.com',
+];
+
+const IGNORED_URLS = [
+  'www.phind.com',
+  'phind.com',
 ];
 
 
@@ -165,6 +168,10 @@ async function main() {
   const body = document.querySelector('body');
 
   // Return if we are not in a whitelisted URL
+  if (IGNORED_URLS.includes(currentTabUrl.host)) {
+    return;
+  }
+
   if (!currentTab || !WHITELISTED_URLS.includes(currentTabUrl.host)) {
     const p = document.createElement('p');
     p.id = 'pageNotInWhitelist';
@@ -193,7 +200,7 @@ async function main() {
 
     do {
       await sleep(1_000)
-    } while (!new URL((await getCurrentTab()).url).searchParams.get('captns'));
+    } while (!new URL((await getCurrentTab())?.url).searchParams.get('captns'));
 
     const captions = new URL((await getCurrentTab()).url).searchParams.get('captns') || false;
     if (!captions) return _no_captions(body);
