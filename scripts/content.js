@@ -59,6 +59,7 @@ async function main() {
 
     captions = stripXML(captions);
 
+    const queryText = 'I have a YouTube video caption for you. Please, give me a short summary';
 
     /** @type {HTMLTextAreaElement} */
     const queryTextArea = document.querySelector('textarea.form-control.bg-white.darkmode-light.searchbox-textarea.search-bar-hide-scrollbar.fs-5.px-2.pt-2.pb-0.my-1.mx-0.row');
@@ -73,14 +74,26 @@ async function main() {
     /** @type {HTMLTextAreaElement} */
     const contextTextArea = document.querySelector('textarea.form-control.bg-white.darkmode-light.searchbox-textarea.fs-5.m-1.p-2.rounded-1');
 
-    queryTextArea.value = 'I have a YouTube video caption for you. Please, give me a short summary';
-    contextTextArea.value = captions.slice(0, 13_000);
+    queryTextArea.click();
+    queryTextArea.focus();
+    await sleep(300);
+    queryTextArea.value = queryText;
+
+    await sleep(300);
+    queryTextArea.click();
+    queryTextArea.focus();
+    await sleep(300);
+    contextTextArea.value = captions.slice(0, 13_000 - queryText.length - 1);
 
 
     /** @type {HTMLFormElement} */
     const form = document.querySelector('form.mb-3');
 
-    await sleep(2_000);
+    await sleep(500);
+    form.click()
+    await sleep(300);
+    form.focus();
+    await sleep(300);
     form.submit();
   }
 }
