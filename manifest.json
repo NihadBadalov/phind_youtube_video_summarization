@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Phind YouTube Video Summarization",
   "description": "Summarize a YouTube video with Phind",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "action": {
     "default_popup": "hello.html",
     "default_icon": "images/icon-128.png"
