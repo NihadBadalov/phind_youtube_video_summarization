@@ -2,46 +2,6 @@
 // API Reference: https://developer.chrome.com/docs/extensions/reference/api/tabs?authuser=3
 // Guide: https://developer.chrome.com/docs/extensions/get-started/tutorial/popup-tabs-manager?authuser=3#step-1
 
-/**
-  * Fetch transcripts for a video
- * @param {string} channelName Channel name - e.g. "ThePrimeTime"
- * @param {string} videoTitle Video title - e.g. "Haskell researchers Discovers Industry | Prime Reacts"
- * @param {string} videoId Video ID - e.g. "0Wvejkzw5Ac"
- */
-function fetchTranscripts(channelName, videoTitle, videoId) {
-  fetch('https://merlin-uam-yak3s7dv3a-uw.a.run.app/summarize/youtube', {
-    method: 'POST',
-    headers: {
-      'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64; rv:121.0) Gecko/20100101 Firefox/121.0',
-      'Accept': '*/*',
-      'Accept-Language': 'en-US,en;q=0.5',
-      'Accept-Encoding': 'gzip, deflate, br',
-      'Referer': 'https://www.youtubesummaries.com/',
-      'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjUyNmM2YTg0YWMwNjcwMDVjZTM0Y2VmZjliM2EyZTA4ZTBkZDliY2MiLCJ0eXAiOiJKV1QifQ.eyJuYW1lIjoiQWxleCBEdWJibGVyIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FDZzhvY0k3OFB2QURiUkhuaW5KR1VPajhoZlc1elFOdlk4OEYxaTg4THl1dFJOUkZBPXM5Ni1jIiwiaXNzIjoiaHR0cHM6Ly9zZWN1cmV0b2tlbi5nb29nbGUuY29tL2ZveWVyLXdvcmsiLCJhdWQiOiJmb3llci13b3JrIiwiYXV0aF90aW1lIjoxNzA0MjgwNzA0LCJ1c2VyX2lkIjoibmp4OVU4YWtCN1Z0ZEVaTGF6QWl4UzBLdkxhMiIsInN1YiI6Im5qeDlVOGFrQjdWdGRFWkxhekFpeFMwS3ZMYTIiLCJpYXQiOjE3MDQyODA3MDQsImV4cCI6MTcwNDI4NDMwNCwiZW1haWwiOiJydWRza29qNjY0QGdtYWlsLmNvbSIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJmaXJlYmFzZSI6eyJpZGVudGl0aWVzIjp7Imdvb2dsZS5jb20iOlsiMTA3Njk1NDAzODA4NDUxNzkyNTg4Il0sImVtYWlsIjpbInJ1ZHNrb2o2NjRAZ21haWwuY29tIl19LCJzaWduX2luX3Byb3ZpZGVyIjoiZ29vZ2xlLmNvbSJ9fQ.OpL3O3SyX8jowvp1qGJiwUQTYJtoyRDhUnj85v5kvgzVGencJ_WI-82ZZDPLL2Q-w1A_SrJd6cCoDVwV1KLmL6QBW5v1RzHGziY8ujTJReC_RNYnSW7xCA_Gwtnx8rYrC7EvMi7p_GoDkhb0CAe0dI6zYYA22ykLj_0HNOebJnx9Mz1FTWifGEsdM-YlAgD8odC2j2RWlNSd15NlEx9O1tVOAwKYTt8jK-ZBD0g2d-7Iy3AJ3zEPlw9tyLmholx949pAb03mScKzfpQmd52O5NizOUjqXpNkYXL0TOWqz7f5uv7Dey1d_E6QkEEphdkCzfSxR9i8D9sotcems9sG6A',
-      'Content-Type': 'application/json',
-      'Origin': 'https://www.youtubesummaries.com',
-      'Connection': 'keep-alive',
-      'Sec-Fetch-Dest': 'empty',
-      'Sec-Fetch-Mode': 'cors',
-      'Sec-Fetch-Site': 'cross-site',
-      'TE': 'trailers',
-    },
-    body: JSON.stringify({
-      "estimatedQueryCost": 5,
-      "language": "AUTO",
-      "useCache": true,
-      "videoId": "0Wvejkzw5Ac",
-      "isWhisper": false,
-      "videoContext": {
-        "channelName": channelName,
-        "videoTitle": videoTitle,
-        "videoId": videoId,
-      },
-      "requestFrom": "WEB"
-    }),
-  });
-}
-
 async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -55,18 +15,6 @@ async function getCurrentTab() {
   // `tab` will either be a `tabs.Tab` instance or `undefined`.
   let [tab] = await chrome.tabs.query(queryOptions);
   return tab;
-}
-
-/**
-  * Mutes or unmutes a tab
- * @param {number} tabId Tab ID
- */
-async function muteTab(tabId) {
-  //const tab = await chrome.tabs.get(tabId);
-  // const muted = !tab.mutedInfo.muted;
-  const muted = true;
-  await chrome.tabs.update(tabId, { muted });
-  // console.log(`Tab ${tab.id} is ${muted ? "muted" : "unmuted"}`);
 }
 
 function DOMtoString(selector) {
@@ -142,7 +90,7 @@ function _error(body) {
  */
 function _no_captions(body) {
   const p = document.createElement('p');
-  p.innerText = 'This video doesn\'t have any captions!';
+  p.innerText = 'Try one more time, please.\nIf that one is also unsuccessful, then the video has no captions';
   body.appendChild(p);
 }
 
@@ -198,34 +146,41 @@ async function main() {
       : channelNameFetchData[0].result.match(new RegExp(/\<a .+>(.+)\<\/a\>/))[1];
     if (!channelName) return _error(body);
 
-    do {
-      await sleep(1_000)
-    } while (!new URL((await getCurrentTab())?.url).searchParams.get('captns'));
+    // Captions
+    let activeTab = await getCurrentTab();
+    const { name: browserName } = await chrome.runtime.getBrowserInfo()
+    const ytplayer = await getPageVar('ytplayer', activeTab?.id, browserName);
+    const captions = ytplayer?.config?.args?.raw_player_response?.captions?.playerCaptionsTracklistRenderer?.captionTracks[0]?.baseUrl;
 
-    const captions = new URL((await getCurrentTab()).url).searchParams.get('captns') || false;
-    if (!captions) return _no_captions(body);
-
-
-    // Remove cptns from the URL
-    currentTab = await getCurrentTab();
-    const newUrl = new URL(currentTab.url);
-    newUrl.searchParams.delete('captns');
-    await chrome.tabs.update(
-      currentTab.id,
-      { url: newUrl.href },
-    );
+    if (!ytplayer || (!captions && browserName !== 'Firefox')) return _no_captions(body);
 
     // Phind
-    const phindTab = await openNewTab(`https://www.phind.com/search?home=true&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&channelName=${encodeURIComponent(channelName)}&captns=${captions}`);
-
-    do {
-      await sleep(2_000);
-    } while (phindTab.status !== 'complete');
-
-    const p = document.createElement('p');
-    p.innerText = 'Click on the extension again! (2 times)';
-    body.prepend(p);
+    const phindTab = await openNewTab(`https://www.phind.com/search?home=true&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&channelName=${encodeURIComponent(channelName)}&captns=${encodeURIComponent(captions ?? ytplayer)}`);
   }
 }
 
 main();
+
+async function getPageVar(name, tabId, browserName) {
+  if (browserName === 'Firefox') {
+    return new Promise((res) => {
+      chrome.tabs.query({ active: true, currentWindow: true }, async function(tabs) {
+        chrome.tabs.sendMessage(tabs[0].id, { text: "ytplayer" }, function(response) {
+          res(response?.message);
+        });
+      });
+    });
+
+  } else {
+    const [{ result }] = await chrome.scripting.executeScript({
+      func: name => window[name],
+      args: [name],
+      target: {
+        tabId: tabId ??
+          (await chrome.tabs.query({ active: true, currentWindow: true }))[0].id
+      },
+      world: 'MAIN',
+    });
+    return result;
+  }
+}
