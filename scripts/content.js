@@ -36,11 +36,63 @@ async function main() {
 
     await sleep(500);
     form.click()
-    await sleep(300);
+    await sleep(500);
     form.focus();
-    await sleep(300);
+    await sleep(1_000);
     form.submit();
   }
 }
 
+async function initializeLatex() {
+  // LaTeX rendering
+  try {
+    if (!new URL(window.location.href).host.includes('phind')) return;
+  } catch (e) { return; }
+
+  console.log('Latex initializer called');
+
+  (async () => {
+    // Polyfill
+    const script = document.createElement('script');
+    script.src = await chrome.runtime.getURL('scripts/injectPolyfill.js');
+    script.onload = () => {
+      console.log('POLYFILL LOADED');
+    };
+    (document.head || document.documentElement)?.appendChild(script);
+  })();
+
+  (async () => {
+    // LaTeX
+    const script = document.createElement('script');
+    script.src = await chrome.runtime.getURL('scripts/injectLatex.js');
+    script.onload = () => {
+      console.log('LATEX LOADED');
+    };
+    (document.head || document.documentElement)?.appendChild(script);
+  })();
+}
+
+initializeLatex();
 main();
+
+function getVariable(v) {
+  var c = document.createElement("div");
+  c.id = 'var-data';
+  c.style.display = 'none';
+  document.body.appendChild(c);
+  var s = document.createElement('script');
+  s.innerHTML = 'document.getElementById("var-data").innerText=JSON.stringify(' + v + ');';
+  document.head.appendChild(s);
+  var data = JSON.parse(c.innerText);
+  c.remove();
+  s.remove();
+  return data;
+}
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.text === "ytplayer") {
+    const ytplayer = getVariable('ytplayer');
+    if (!ytplayer) return sendResponse({ message: undefined });
+    sendResponse({ message: ytplayer?.config?.args?.raw_player_response?.captions?.playerCaptionsTracklistRenderer?.captionTracks[0]?.baseUrl });
+  }
+});
