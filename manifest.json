@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Phind YouTube Video Summarization",
   "description": "Summarize a YouTube video with Phind",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "action": {
     "default_popup": "hello.html",
     "default_icon": "images/icon-128.png"
@@ -55,7 +55,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "{ed2210bc-7c0c-4b46-b578-1f58d54c4571}"
+      "id": "{ed2210bc-7c0c-4b46-b578-1f58d54c4592}"
     }
   }
 }
