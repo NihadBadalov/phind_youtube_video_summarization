@@ -72,8 +72,24 @@ async function initializeLatex() {
   })();
 }
 
-initializeLatex();
+function addDocumentContentButton() {
+  (async () => {
+    const script = document.createElement('script');
+    script.src = await chrome.runtime.getURL('scripts/addDocumentContents.js');
+    script.onload = () => {
+      console.log('ANALYZE DOCUMENT BUTTON ADDED');
+    };
+    (document.head || document.documentElement)?.appendChild(script);
+  })();
+}
+
+
+// initializeLatex();
 main();
+
+if (new URL(window.location.href)?.pathname === '/search') {
+  addDocumentContentButton();
+}
 
 function getVariable(v) {
   var c = document.createElement("div");
