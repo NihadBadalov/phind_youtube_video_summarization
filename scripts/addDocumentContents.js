@@ -76,16 +76,26 @@ function getFile() {
     let file = e.target.files[0];
 
     let reader = new FileReader();
-    reader.readAsText(file, 'UTF-8');
+    if (file.name.endsWith('pdf')) {
+      reader.readAsArrayBuffer(file);
+    } else {
+      reader.readAsText(file, 'UTF-8');
+    }
 
     reader.onload = readerEvent => {
-      fileContents = readerEvent.target.result;
+      let fileContents;
+      if (file.name.endsWith('pdf')) {
+        let arrayBuffer = readerEvent.target.result;
+        fileContents = btoa(String.fromCharCode.apply(null, new Uint8Array(arrayBuffer)));
+      } else {
+        fileContents = readerEvent.target.result;
+      }
 
       if (!queryInput) updateInput();
 
       queryInput.value += `\n\nAttached file ${file.name}'s contents:\n${fileContents}`;
     }
-  }
+ }
 
   fileInput.click();
 }

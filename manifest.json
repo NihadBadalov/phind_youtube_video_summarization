@@ -24,7 +24,9 @@
       "resources": [
         "scripts/injectPolyfill.js",
         "scripts/injectLatex.js",
-        "scripts/addDocumentContents.js"
+        "scripts/addDocumentContents.js",
+        "scripts/polyfill.min.js",
+        "scripts/mathjax.js"
       ]
     }
   ],
@@ -54,9 +56,6 @@
     "activeTab",
     "scripting"
   ],
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  },
   "browser_specific_settings": {
     "gecko": {
       "id": "{ed2210bc-7c0c-4b46-b578-1f58d54c4592}"

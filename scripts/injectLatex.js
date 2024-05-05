@@ -26,8 +26,8 @@ setInterval(() => {
 
 // Load the script
 let latexScript = document.createElement('script');
-latexScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-AMS_CHTML';
-document.head.appendChild(latexScript);
+latexScript.src = await chrome.runtime.getURL('scripts/mathjax.js');
+(document.head || document.documentElement).appendChild(latexScript);
 
 function typesetLaTeX() {
   MathJax.Hub.Queue(['Typeset', MathJax.Hub]);

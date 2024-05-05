@@ -155,7 +155,7 @@ async function main() {
     if (!ytplayer || (!captions && browserName !== 'Firefox')) return _no_captions(body);
 
     // Phind
-    const phindTab = await openNewTab(`https://www.phind.com/search?home=true&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&channelName=${encodeURIComponent(channelName)}&captns=${encodeURIComponent(captions ?? ytplayer)}`);
+    const phindTab = await openNewTab(`https://www.phind.com/agent?home=true&videoId=${encodeURIComponent(videoId)}&videoTitle=${encodeURIComponent(videoTitle)}&channelName=${encodeURIComponent(channelName)}&captns=${encodeURIComponent(captions ?? ytplayer)}`);
   }
 }
 

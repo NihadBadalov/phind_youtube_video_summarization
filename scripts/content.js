@@ -18,9 +18,35 @@ async function main() {
     const queryText = 'I have a YouTube video caption for you. Please, give me a short summary. Here are the captions: ';
 
     /** @type {HTMLTextAreaElement} */
-    const queryTextArea = document.querySelector('textarea.form-control.bg-white.darkmode-light.searchbox-textarea.search-bar-hide-scrollbar.fs-5.px-2.pt-2.pb-0.my-1.mx-0.row');
+    const queryTextArea = document.querySelector('textarea.form-control.bg-white.darkmode-light.searchbox-textarea.search-bar-hide-scrollbar.rounded-1.p-3.fs-5');
     await sleep(500);
 
+    // Use internet clarifications
+    const notUsingInternet = document.querySelector('i.fe.fe-cloud-lightning.m-1');
+    if (notUsingInternet) {
+      notUsingInternet.click();
+      await sleep(500);
+    }
+
+    // Use the 34B model
+    const modelChangeButton = document.querySelector('button.btn.text-black.px-0.py-0.m-0.fs-6');
+    if (!modelChangeButton?.innerText.includes('34B')) {
+      modelChangeButton.click();
+      await sleep(500);
+
+      /** @type {Array<HTMLButtonElement> | null} */
+      const modelButtons = Array.from(document.querySelectorAll('button.mx-1.dropdown-item.d-flex.align-items-center.justify-content-between') ?? []);
+      await sleep(500);
+      if (modelButtons) {
+        const button34B = modelButtons.find(btn => btn.innerText.includes('-34B'));
+        if (button34B) {
+          button34B.click();
+          await sleep(500);
+        }
+      }
+    }
+
+    // Write our query out
     queryTextArea.click();
     queryTextArea.focus();
     await sleep(500);
